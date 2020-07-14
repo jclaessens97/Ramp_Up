@@ -11,4 +11,12 @@ export default class TrackController {
     );
     ctx.status = 200;
   }
+
+  async getAudioFeaturesByIds(ctx) {
+    await this.trackService.getAudioFeaturesByIds(
+      getBearerTokenFromHeader(ctx.header.authorization),
+      ['0tGPJ0bkWOUmH7MEOR77qc', '0tGPJ0bkWOUmH7MEOR77qc'],
+    );
+    ctx.status = 200;
+  }
 }

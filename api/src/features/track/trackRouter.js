@@ -6,5 +6,6 @@ const router = new KoaRouter();
 const trackAPI = makeInvoker(trackController);
 
 router.get('/liked/user', trackAPI('getAllLikedTracksByUserToken'));
+router.get('/audiofeatures', trackAPI('getAudioFeaturesByIds'));
 
 export default router;

@@ -8,4 +8,10 @@ export default class TrackService {
     console.log(`${allLikedTracks.length} liked tracks found.`);
     return allLikedTracks;
   }
+
+  async getAudioFeaturesByIds(accessToken, ids) {
+    const audioFeatures = await this.spotifyClient.getAudioFeaturesByIds(accessToken, ids);
+    console.log(audioFeatures);
+    return audioFeatures;
+  }
 }

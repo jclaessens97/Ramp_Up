@@ -33,4 +33,15 @@ export default class SpotifyClient {
     );
     return [...firstBatchResponse.data.items, ...otherBatches];
   }
+
+  async getAudioFeaturesByIds(accessToken, ids) {
+    const audioFeaturesResponse = await requestUtils.GET(
+      this.axios,
+      '/audio-features',
+      accessToken,
+      { ids: ids.join(',') },
+    );
+
+    return audioFeaturesResponse.data.audio_features;
+  }
 }
