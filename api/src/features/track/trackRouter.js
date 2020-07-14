@@ -5,6 +5,6 @@ import trackController from './trackController';
 const router = new KoaRouter();
 const trackAPI = makeInvoker(trackController);
 
-router.get('/', trackAPI('getTest'));
+router.get('/liked/user', trackAPI('getAllUsersLikedTracks'));
 
 export default router;

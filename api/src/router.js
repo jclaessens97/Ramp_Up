@@ -3,6 +3,7 @@ import trackRouter from './features/track/trackRouter';
 
 const router = new KoaRouter();
 
-router.use('/test', trackRouter.routes());
+router.prefix('/api');
+router.use('/track', trackRouter.routes());
 
 export default router;

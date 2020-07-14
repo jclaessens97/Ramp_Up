@@ -1,6 +1,11 @@
 export default class TrackService {
-  test() {
-    console.log(this);
-    return 'test';
+  constructor({ spotifyClient }) {
+    this.spotifyClient = spotifyClient;
+  }
+
+  async getAllUsersLikedTracks(accessToken) {
+    const allLikedTracks = await this.spotifyClient.getAllUsersLikedTracks(accessToken);
+    console.log(`${allLikedTracks.length} liked tracks found.`);
+    return allLikedTracks;
   }
 }

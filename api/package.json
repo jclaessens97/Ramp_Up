@@ -14,11 +14,13 @@
     "test": "jest"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "awilix": "^4.2.6",
     "awilix-koa": "4.0.0",
     "koa": "^2.13.0",
     "koa-bodyparser": "4.3.0",
-    "koa-router": "^9.1.0"
+    "koa-router": "^9.1.0",
+    "querystring": "0.2.0"
   },
   "devDependencies": {
     "@babel/cli": "7.10.3",

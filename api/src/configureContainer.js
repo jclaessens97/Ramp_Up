@@ -11,6 +11,7 @@ export default function configureContainer() {
       [
         ['features/**/*Controller.js', { register: asClass }],
         ['features/**/*Service.js', { register: asClass }],
+        ['features/**/*Client.js', { register: asClass }],
       ], {
         cwd: __dirname,
         formatName: 'camelCase',
