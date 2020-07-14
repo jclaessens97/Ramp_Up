@@ -1,58 +1,36 @@
-import axios from 'axios';
-import querystring from 'querystring';
-import { delay } from '../../helpers/promiseUtils';
+import requestUtils from '../../helpers/requestUtils';
 
 export default class SpotifyClient {
   constructor() {
-    this.axios = axios.create({
-      baseURL: 'https://api.spotify.com/v1',
-    });
+    this.SPOTIFY_API_URL = 'https://api.spotify.com/v1';
+    this.axios = requestUtils.createAxiosInstance(this.SPOTIFY_API_URL);
   }
 
-  // TODO: move to requestUtils
-  get(accessToken, url) {
-    return this.axios.get(url, {
-      headers: {
-        authorization: `Bearer ${accessToken}`,
-      },
-    });
+  getLikedTracksByUserToken(accessToken, offset = 0, limit = 20) {
+    return requestUtils.GET(this.axios, '/me/tracks', accessToken, { offset, limit });
   }
 
-  getUsersLikedTracks(accessToken, offset = 0, limit = 50) {
-    return this.axios.get('/me/tracks', {
-      headers: {
-        authorization: `Bearer ${accessToken}`,
-      },
-      params: querystring.stringify({
-        offset,
-        limit,
-      }),
-    });
+  async getAllLikedTracksByUserToken(accessToken) {
+    const firstBatchResponse = await this.getLikedTracksByUserToken(accessToken, 0, 50);
+    const otherBatches = await requestUtils.iteratePaginatedApiResponse(
+      this.axios,
+      firstBatchResponse,
+      accessToken,
+    );
+    return [...firstBatchResponse.data.items, ...otherBatches];
   }
 
-  async getAllUsersLikedTracks(accessToken) {
-    const allLikedTracks = [];
-    const firstBatchResponse = await this.getUsersLikedTracks(accessToken, 0, 50);
-    allLikedTracks.push(...firstBatchResponse.data.items);
+  getPlaylistsByUserToken(accessToken, offset = 0, limit = 20) {
+    return requestUtils.GET(this.axios, '/me/playlists', accessToken, { offset, limit });
+  }
 
-    let response = firstBatchResponse.data;
-    do {
-      try {
-        response = (await this.get(accessToken, response.next)).data;
-        allLikedTracks.push(...response.items);
-      } catch (err) {
-        if (!err.response) {
-          console.error(err);
-          return Promise.reject(new Error('Error occured while fetching allLikedSongs'));
-        }
-
-        if (err.response.status === 429) {
-          const retryAfterInMs = err.response.headers['Retry-After'] * 1000;
-          console.warn(`Hitting rate limit... Waiting ${retryAfterInMs}ms for next request.`);
-          await delay(retryAfterInMs);
-        }
-      }
-    } while (response.next);
-
-    return allLikedTracks;
+  async getAllPlaylistsByUserToken(accessToken) {
+    const firstBatchResponse = await this.getPlaylistsByUserToken(accessToken, 0, 50);
+    const otherBatches = await requestUtils.iteratePaginatedApiResponse(
+      this.axios,
+      firstBatchResponse,
+      accessToken,
+    );
+    return [...firstBatchResponse.data.items, ...otherBatches];
+  }
 }

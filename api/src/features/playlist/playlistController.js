@@ -1,12 +1,12 @@
 import { getBearerTokenFromHeader } from '../../helpers/authUtils';
 
 export default class TrackController {
-  constructor({ trackService }) {
-    this.trackService = trackService;
+  constructor({ playlistService }) {
+    this.playlistService = playlistService;
   }
 
-  async getAllLikedTracksByUserToken(ctx) {
-    await this.trackService.getAllLikedTracksByUserToken(
+  async getAllPlaylistsByUserToken(ctx) {
+    await this.playlistService.getAllPlaylistsByUserToken(
       getBearerTokenFromHeader(ctx.header.authorization),
     );
     ctx.status = 200;
