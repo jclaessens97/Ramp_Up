@@ -5,7 +5,15 @@
 ** Default: https://github.com/tailwindcss/tailwindcss/blob/master/stubs/defaultConfig.stub.js
 */
 module.exports = {
-  theme: {},
+  theme: {
+    extend: {
+      colors: {
+        'spotify-green': '#1DB954',
+        'spotify-light-green': '#1ED760',
+        black: '#191414',
+      },
+    },
+  },
   variants: {},
   plugins: [],
   purge: {
@@ -16,7 +24,7 @@ module.exports = {
       'layouts/**/*.vue',
       'pages/**/*.vue',
       'plugins/**/*.js',
-      'nuxt.config.js'
-    ]
-  }
-}
+      'nuxt.config.js',
+    ],
+  },
+};

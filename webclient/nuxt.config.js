@@ -1,3 +1,4 @@
+require('dotenv').config();
 
 export default {
   /*
@@ -15,7 +16,7 @@ export default {
   ** See https://nuxtjs.org/faq/host-port/
   */
   server: {
-    port: 8080
+    port: 8080,
   },
   /*
   ** Headers of the page
@@ -26,11 +27,11 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
+      { hid: 'description', name: 'description', content: process.env.npm_package_description || '' },
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+    ],
   },
   /*
   ** Global CSS
@@ -55,14 +56,16 @@ export default {
     // Doc: https://github.com/nuxt-community/eslint-module
     '@nuxtjs/eslint-module',
     // Doc: https://github.com/nuxt-community/nuxt-tailwindcss
-    '@nuxtjs/tailwindcss'
+    '@nuxtjs/tailwindcss',
   ],
   /*
   ** Nuxt.js modules
   */
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    // Doc: https://auth.nuxtjs.org/#getting-started
+    '@nuxtjs/auth',
   ],
   /*
   ** Axios module configuration
@@ -70,9 +73,37 @@ export default {
   */
   axios: {},
   /*
+  ** Auth module configuration
+  ** See https://auth.nuxtjs.org/guide/setup.html
+  */
+  auth: {
+    redirect: {
+      login: '/login',
+      logout: '/login',
+      callback: '/callback',
+      home: '/',
+    },
+    resetOnError: true,
+    strategies: {
+      spotify: {
+        _scheme: 'oauth2',
+        authorization_endpoint: 'https://accounts.spotify.com/authorize',
+        userinfo_endpoint: 'https://api.spotify.com/v1/me',
+        scope: ['user-library-read'],
+        // access_type: undefined,
+        // access_token_endpoint: 'https://accounts.spotify.com/api/token',
+        response_type: 'token',
+        // token_type: 'Bearer',
+        redirect_uri: process.env.SPOTIFY_REDIRECT_URI,
+        client_id: process.env.SPOTIFY_CLIENT_ID,
+        // token_key: 'access_token',
+      },
+    },
+  },
+  /*
   ** Build configuration
   ** See https://nuxtjs.org/api/configuration-build/
   */
   build: {
-  }
-}
+  },
+};
