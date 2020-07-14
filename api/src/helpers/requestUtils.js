@@ -16,6 +16,21 @@ function GET(axiosInstance, url, accessToken = null, params = null) {
   return axiosInstance.get(url, opts);
 }
 
+function POST(axiosInstance, url, body, accessToken = null, params = null) {
+  const opts = {};
+
+  if (accessToken) {
+    opts.headers = {};
+    opts.headers.authorization = `Bearer ${accessToken}`;
+  }
+
+  if (params) {
+    opts.params = params;
+  }
+
+  return axiosInstance.post(url, body, opts);
+}
+
 function createAxiosInstance(baseURL) {
   return axios.create({
     baseURL,
@@ -51,6 +66,7 @@ async function iteratePaginatedApiResponse(axiosInstance, response, accessToken)
 
 export default {
   GET,
+  POST,
   iteratePaginatedApiResponse,
   createAxiosInstance,
 };

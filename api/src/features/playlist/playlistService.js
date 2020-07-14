@@ -8,4 +8,13 @@ export default class TrackService {
     console.log(`${allPlaylists.length} playlists found.`);
     return allPlaylists;
   }
+
+  async createPlaylist(accessToken, userId, name) {
+    const playlist = await this.spotifyClient.createPlaylist(
+      accessToken,
+      userId,
+      name,
+    );
+    return playlist;
+  }
 }

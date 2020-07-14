@@ -11,4 +11,13 @@ export default class TrackController {
     );
     ctx.status = 200;
   }
+
+  async createPlaylist(ctx) {
+    await this.playlistService.createPlaylist(
+      getBearerTokenFromHeader(ctx.header.authorization),
+      '',
+      'Test playlist',
+    );
+    ctx.status = 201;
+  }
 }

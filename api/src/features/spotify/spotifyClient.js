@@ -44,4 +44,18 @@ export default class SpotifyClient {
 
     return audioFeaturesResponse.data.audio_features;
   }
+
+  async createPlaylist(accessToken, userId, name, publicVisible = false, description = '') {
+    const playlist = await requestUtils.POST(
+      this.axios,
+      `/users/${userId}/playlists`,
+      {
+        name,
+        public: publicVisible,
+        description,
+      },
+      accessToken,
+    );
+    return playlist.data;
+  }
 }
