@@ -13,5 +13,6 @@ module.exports = {
     'no-await-in-loop': 'off',
     'class-methods-use-this': 'off',
     'max-len': [2, 150, 4],
+    'no-plusplus': 'off',
   },
 };

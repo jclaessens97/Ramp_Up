@@ -58,4 +58,13 @@ export default class SpotifyClient {
     );
     return playlist.data;
   }
+
+  async addTracksToPlaylist(accessToken, playlistId, trackUris) {
+    return requestUtils.POST(
+      this.axios,
+      `/playlists/${playlistId}/tracks`,
+      { uris: trackUris },
+      accessToken,
+    );
+  }
 }

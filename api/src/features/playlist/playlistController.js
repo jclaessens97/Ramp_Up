@@ -20,4 +20,12 @@ export default class TrackController {
     );
     ctx.status = 201;
   }
+  async addTracksToPlaylist(ctx) {
+    await this.playlistService.addTracksToPlaylist(
+      getBearerTokenFromHeader(ctx.header.authorization),
+      '3Em8a0BBkwvjuNOkFdwE2y',
+      ['spotify:track:78XfOXpUShe7mFwhjBEd94', 'spotify:track:55CZrhOjk8eGiv5LHV8yvG'],
+    );
+    ctx.status = 201;
+  }
 }
