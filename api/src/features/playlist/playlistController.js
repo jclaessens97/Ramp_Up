@@ -20,6 +20,7 @@ export default class TrackController {
     );
     ctx.status = 201;
   }
+
   async addTracksToPlaylist(ctx) {
     await this.playlistService.addTracksToPlaylist(
       getBearerTokenFromHeader(ctx.header.authorization),
