@@ -1,0 +1,6 @@
+id,danceability,energy,key,loudness,mode,speechiness, acousticness,instrumentalness,liveness,valence,tempo,duration,time_signature,genre
+63ANvDI7YAyD6BzCpMGkOH,0.778, 0.743,9,-69.099,0,0.141,0.392, 0,0.0631,0.555,121.036,160960,4,hiphop/rap
+25w9EAbgKDa7XSSC7MYXKk,0.776, 0.8,7,-5.178,1,0.181,0.221, 0,0.405,0.509,97.949,169879,4,hiphop/rap
+2c8sgbZoEanC3QyFNZxUcA,0.782, 0.713,0,-6.576,0,0.0899,0.0619,0.00125,0.108, 0.68,159.839,218947,4,hiphop/rap
+6Qng1hawspj0ddyexe0IHV,0.67, 0.792,7,-8.211,1,0.0465,0.0362,0.881,0.101, 0.0348,128.018,166400,3,dance/electronic
+7hEWF5fGra9cm2YYpCClMQ,0.517, 0.894,10,-4.029,1,0.0292,0.0148,0.000315,0.465, 0.319,149.935,166400,4,dance/electronic
