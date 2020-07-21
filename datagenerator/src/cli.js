@@ -51,7 +51,6 @@ export async function cli(args) {
     const audioFeatures = await client.getAudioFeaturesByIds(accessToken, tracks.map(d => d.track.id));
     progress.update(progressValue += 20);
 
-
     const csv = convertToCsv(audioFeatures, genre);
     progress.update(progressValue += 20);
 
