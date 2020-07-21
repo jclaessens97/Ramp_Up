@@ -11,6 +11,7 @@ export default class TrackService {
 
   async getAudioFeaturesByIds(accessToken, ids) {
     const audioFeatures = await this.spotifyClient.getAudioFeaturesByIds(accessToken, ids);
+    console.log(audioFeatures);
     return audioFeatures;
   }
 }
