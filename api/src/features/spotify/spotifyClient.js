@@ -71,12 +71,21 @@ export default class SpotifyClient {
   }
 
   async addTracksToPlaylist(accessToken, playlistId, trackUris) {
-    return requestUtils.POST(
-      this.axios,
-      `/playlists/${playlistId}/tracks`,
-      { uris: trackUris },
-      accessToken,
-    );
+    const numberOfChunks = Math.ceil(trackUris.length) / 100;
+    const chunkSize = trackUris.length / numberOfChunks;
+    const chunks = chunkArray(trackUris, chunkSize);
+
+    for (let i = 0; i < numberOfChunks; i++) {
+      const chunk = chunks[i];
+      await requestUtils.POST(
+        this.axios,
+        `/playlists/${playlistId}/tracks`,
+        { uris: chunk },
+        accessToken,
+      );
+    }
+
+    return Promise.resolve();
   }
 
   async getTracksFromPlaylist(accessToken, playlistId, offset = 0, limit = 100) {
