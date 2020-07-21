@@ -30,7 +30,6 @@ export default class TrackController {
         '2c8sgbZoEanC3QyFNZxUcA', // Logic - Flexicution
         '6Qng1hawspj0ddyexe0IHV', // Deadmau5 - Polaris
         '7hEWF5fGra9cm2YYpCClMQ', // Audiotricz - Renegade
-        '7I7ak5BECCYw6yQ11wLG6C', // Lijpe - Nu heb ik paper
       ],
     );
 
