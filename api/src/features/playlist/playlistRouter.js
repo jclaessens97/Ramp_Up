@@ -8,5 +8,6 @@ const playlistAPI = makeInvoker(playlistController);
 router.get('/user', playlistAPI('getAllPlaylistsByUserToken'));
 router.get('/create', playlistAPI('createPlaylist'));
 router.get('/add-tracks', playlistAPI('addTracksToPlaylist'));
+router.get('/get-tracks', playlistAPI('getAllTracksFromPlaylist'));
 
 export default router;

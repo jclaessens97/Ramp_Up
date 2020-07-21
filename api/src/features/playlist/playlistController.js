@@ -29,4 +29,12 @@ export default class TrackController {
     );
     ctx.status = 201;
   }
+
+  async getAllTracksFromPlaylist(ctx) {
+    await this.playlistService.getAllTracksFromPlaylist(
+      getBearerTokenFromHeader(ctx.header.authorization),
+      '1VHW5SJkyJJ2Vy3hsGZUHX',
+    );
+    ctx.status = 200;
+  }
 }

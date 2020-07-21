@@ -67,4 +67,14 @@ export default class TrackService {
       trackUris,
     );
   }
+
+  async getAllTracksFromPlaylist(accessToken, playlistId) {
+    const tracks = await this.spotifyClient.getAllTracksFromPlaylist(
+      accessToken,
+      playlistId,
+    );
+
+    console.log(tracks.length);
+    return tracks;
+  }
 }

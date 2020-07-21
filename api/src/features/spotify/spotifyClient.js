@@ -67,4 +67,23 @@ export default class SpotifyClient {
       accessToken,
     );
   }
+
+  async getTracksFromPlaylist(accessToken, playlistId, offset = 0, limit = 100) {
+    return requestUtils.GET(
+      this.axios,
+      `/playlists/${playlistId}/tracks`,
+      accessToken,
+      { offset, limit },
+    );
+  }
+
+  async getAllTracksFromPlaylist(accessToken, playlistId) {
+    const firstBatchResponse = await this.getTracksFromPlaylist(accessToken, playlistId, 0, 5);
+    const otherBatches = await requestUtils.iteratePaginatedApiResponse(
+      this.axios,
+      firstBatchResponse,
+      accessToken,
+    );
+    return [...firstBatchResponse.data.items, ...otherBatches];
+  }
 }
