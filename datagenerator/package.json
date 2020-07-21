@@ -1,0 +1,15 @@
+{
+  "name": "ramp_up-datagenerator",
+  "version": "1.0.0",
+  "description": "Generates training data using the Spotify api.",
+  "author": "Jeroen Claessens",
+  "license": "MIT",
+  "bin": {
+    "grabplaylists": "bin/grabplaylists"
+  },
+  "dependencies": {
+    "cli-progress": "3.8.2",
+    "esm": "^3.2.25",
+    "json2csv": "5.0.1"
+  }
+}
