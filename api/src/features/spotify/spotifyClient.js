@@ -36,12 +36,10 @@ export default class SpotifyClient {
   }
 
   async getAudioFeaturesByIds(accessToken, ids) {
-    const numberOfChunks = Math.ceil(ids.length) / 100;
-    const chunkSize = ids.length / numberOfChunks;
-    const chunks = chunkArray(ids, chunkSize);
+    const chunks = chunkArray(ids, 100);
 
     const features = [];
-    for (let i = 0; i < numberOfChunks; i++) {
+    for (let i = 0; i < chunks.length; i++) {
       const chunk = chunks[i];
       const audioFeaturesResponse = await requestUtils.GET(
         this.axios,
@@ -71,11 +69,9 @@ export default class SpotifyClient {
   }
 
   async addTracksToPlaylist(accessToken, playlistId, trackUris) {
-    const numberOfChunks = Math.ceil(trackUris.length) / 100;
-    const chunkSize = trackUris.length / numberOfChunks;
-    const chunks = chunkArray(trackUris, chunkSize);
+    const chunks = chunkArray(trackUris, 100);
 
-    for (let i = 0; i < numberOfChunks; i++) {
+    for (let i = 0; i < chunks.length; i++) {
       const chunk = chunks[i];
       await requestUtils.POST(
         this.axios,
