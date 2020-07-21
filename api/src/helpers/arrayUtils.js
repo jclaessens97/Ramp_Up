@@ -1,11 +1,10 @@
-export function chunkArray(arr, numberOfChunks) {
-  let tmpArr = [];
-
-  for (let i = 0, j = arr.length; i < j; i += numberOfChunks) {
-    tmpArr = arr.slice(i, i + numberOfChunks);
+export function chunkArray(arr, chunkSize) {
+  const result = [];
+  for (let i = 0; i < arr.length; i += chunkSize) {
+    const chunk = arr.slice(i, i + chunkSize);
+    result.push(chunk);
   }
-
-  return tmpArr;
+  return result;
 }
 
 export default {

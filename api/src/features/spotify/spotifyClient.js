@@ -1,4 +1,5 @@
 import requestUtils from '../../helpers/requestUtils';
+import { chunkArray } from '../../helpers/arrayUtils';
 
 export default class SpotifyClient {
   constructor() {
@@ -35,14 +36,24 @@ export default class SpotifyClient {
   }
 
   async getAudioFeaturesByIds(accessToken, ids) {
-    const audioFeaturesResponse = await requestUtils.GET(
-      this.axios,
-      '/audio-features',
-      accessToken,
-      { ids: ids.join(',') },
-    );
+    const numberOfChunks = Math.ceil(ids.length) / 100;
+    const chunkSize = ids.length / numberOfChunks;
+    const chunks = chunkArray(ids, chunkSize);
 
-    return audioFeaturesResponse.data.audio_features;
+    const features = [];
+    for (let i = 0; i < numberOfChunks; i++) {
+      const chunk = chunks[i];
+      const audioFeaturesResponse = await requestUtils.GET(
+        this.axios,
+        '/audio-features',
+        accessToken,
+        { ids: chunk.join(',') },
+      );
+
+      features.push(...audioFeaturesResponse.data.audio_features);
+    }
+
+    return [...features];
   }
 
   async createPlaylist(accessToken, userId, name, publicVisible = false, description = '') {
