@@ -1,4 +1,5 @@
 import requestUtils from '../../helpers/requestUtils';
+import { chunkArray } from '../../helpers/arrayUtils';
 
 export default class SpotifyClient {
   constructor() {
@@ -35,14 +36,22 @@ export default class SpotifyClient {
   }
 
   async getAudioFeaturesByIds(accessToken, ids) {
-    const audioFeaturesResponse = await requestUtils.GET(
-      this.axios,
-      '/audio-features',
-      accessToken,
-      { ids: ids.join(',') },
-    );
+    const chunks = chunkArray(ids, 100);
 
-    return audioFeaturesResponse.data.audio_features;
+    const features = [];
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
+      const audioFeaturesResponse = await requestUtils.GET(
+        this.axios,
+        '/audio-features',
+        accessToken,
+        { ids: chunk.join(',') },
+      );
+
+      features.push(...audioFeaturesResponse.data.audio_features);
+    }
+
+    return [...features];
   }
 
   async createPlaylist(accessToken, userId, name, publicVisible = false, description = '') {
@@ -60,12 +69,19 @@ export default class SpotifyClient {
   }
 
   async addTracksToPlaylist(accessToken, playlistId, trackUris) {
-    return requestUtils.POST(
-      this.axios,
-      `/playlists/${playlistId}/tracks`,
-      { uris: trackUris },
-      accessToken,
-    );
+    const chunks = chunkArray(trackUris, 100);
+
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
+      await requestUtils.POST(
+        this.axios,
+        `/playlists/${playlistId}/tracks`,
+        { uris: chunk },
+        accessToken,
+      );
+    }
+
+    return Promise.resolve();
   }
 
   async getTracksFromPlaylist(accessToken, playlistId, offset = 0, limit = 100) {
