@@ -195,5 +195,5 @@ print("Evaluation: " + str(evaluation))
 # SAVE MODEL
 # Save model in latest TF SavedModel format
 #
-model.save("models/model")
+model.save("model")
 # tfjs.converters.save_keras_model(model, "tfjs")
