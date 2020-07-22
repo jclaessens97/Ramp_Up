@@ -4,7 +4,6 @@ import tensorflow as tf
 import numpy as np
 import pandas as pd
 import json
-# import tensorflowjs as tfjs
 from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.layers.experimental.preprocessing import Normalization
@@ -196,4 +195,3 @@ print("Evaluation: " + str(evaluation))
 # Save model in latest TF SavedModel format
 #
 model.save("model")
-# tfjs.converters.save_keras_model(model, "tfjs")
