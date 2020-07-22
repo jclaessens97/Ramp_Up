@@ -62,7 +62,7 @@ export async function cli(args) {
 
 
     const timestamp = Date.now();
-    const filename = path.join(outputDir, `${genre}_${timestamp}.csv`);
+    const filename = path.join(outputDir, `${genre.replace('/', '_')}_${timestamp}.csv`);
     fs.writeFileSync(filename, csv);
     progress.update(progressValue += 20);
     progress.stop();
