@@ -1,4 +1,5 @@
 import os
+import glob
 import tensorflow as tf
 import numpy as np
 import pandas as pd
@@ -20,9 +21,8 @@ Path("dist/").mkdir(parents=True, exist_ok=True)
 #
 # PREPARE DATASET
 #
-input_data_path = os.path.join('input', 'example.csv')
-all_df = pd.read_csv(input_data_path)
-
+input_filenames = [i for i in glob.glob(f"input/*.csv")]
+all_df = pd.concat([pd.read_csv(f) for f in input_filenames])
 different_genres_amount = len(set(all_df["genre"]))
 
 if VERBOSE:
