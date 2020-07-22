@@ -4,18 +4,23 @@ import tensorflow as tf
 import numpy as np
 import pandas as pd
 import json
+import wandb
 from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.layers.experimental.preprocessing import Normalization
 from tensorflow.keras.layers.experimental.preprocessing import CategoryEncoding
 from pathlib import Path
 from keras.utils import to_categorical
+from wandb.keras import WandbCallback
 
 # Set to true to print every step and data
 VERBOSE = False
 
 # Creates dist folder to save the production-model and -metadata
 Path("dist/").mkdir(parents=True, exist_ok=True)
+
+# Initialize wandb to visualize training
+wandb.init(project="spotify-ramp_up")
 
 #
 # PREPARE DATASET
@@ -57,9 +62,7 @@ def dataframe_to_dataset(df, ignore_columns=[]):
         df.pop(col)
     labels = df.pop("genre")
     labels = map_to_integers(labels)
-    print(labels)
     ds = tf.data.Dataset.from_tensor_slices((dict(df), labels))
-    print(ds)
     ds = ds.shuffle(buffer_size=len(df))
     return ds
 
@@ -182,7 +185,7 @@ if VERBOSE:
 #
 # TRAIN MODEL
 #
-model.fit(train_ds, epochs=50, validation_data=val_ds)
+model.fit(train_ds, epochs=50, validation_data=val_ds, callbacks=[WandbCallback()])
 
 #
 # EVALUATE MODEL
@@ -195,3 +198,6 @@ print("Evaluation: " + str(evaluation))
 # Save model in latest TF SavedModel format
 #
 model.save("model")
+
+# Also save model to w&b dashboard
+model.save(os.path.join(wandb.run.dir, "model"))
