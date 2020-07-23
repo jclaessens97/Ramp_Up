@@ -4,12 +4,14 @@ export function stringifyParams(params) {
 }
 
 export function parseParams(params) {
-  return params.split('&')
-    .map((p) => {
+  const obj = {};
+
+  params.split('&')
+    .forEach((p) => {
       const [k, v] = p.split('=');
 
-      const obj = {};
       obj[k] = v;
-      return obj;
     })
+
+  return obj;
 }

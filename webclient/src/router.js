@@ -18,7 +18,10 @@ const router = createRouter({
 const publicRoutes = ['/login'];
 
 router.beforeEach((to, from, next) => {
+  if (to.path === '/callback') return next();
+
   const isAuthenticated = getAccessToken();
+  console.log(isAuthenticated);
 
   if (!publicRoutes.includes(to.path) && !isAuthenticated) {
     return next('/login');
@@ -27,6 +30,8 @@ router.beforeEach((to, from, next) => {
   if (publicRoutes.includes(to.path) && isAuthenticated) {
     return next('/');
   }
+
+  next();
 });
 
 export default router;

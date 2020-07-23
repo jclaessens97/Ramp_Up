@@ -1,5 +1,7 @@
 import { stringifyParams, parseParams } from '../helpers/urlUtils';
 
+const TOKEN_NAME = 'RampUp_Spotify';
+
 export function requestAuthorization() {
   const params = {
     client_id: import.meta.env.VITE_SPOTIFY_CLIENT_ID,
@@ -15,15 +17,20 @@ export function requestAuthorization() {
 export function parseAccessToken(ctx) {
   const { hash } = ctx.$route;
   const params = parseParams(hash.slice(1));
-  storeAccessToken(params.accessToken);
-  ctx.$router.push('/home');
+  storeAccessToken(params.access_token);
+  ctx.$router.push('/');
 }
 
 function storeAccessToken(accessToken) {
   console.log(import.meta.env.VITE_TOKEN_KEY_NAME);
-  window.localStorage.setItem(import.meta.env.VITE_TOKEN_KEY_NAME, `Bearer ${accessToken}`);
+  window.localStorage.setItem(TOKEN_NAME, `Bearer ${accessToken}`);
 }
 
-export function getAccessToken(accessToken) {
-  window.localStorage.getItem(import.meta.env.VITE_TOKEN_KEY_NAME);
+export function getAccessToken() {
+  return window.localStorage.getItem(TOKEN_NAME);
+}
+
+export function logout(ctx) {
+  window.localStorage.removeItem(TOKEN_NAME);
+  ctx.$router.push('/login');
 }

@@ -13,21 +13,18 @@
 </template>
 
 <script>
-export default {
-  middleware: 'auth',
-  computed: {
-    // TODO: remove, only for debugging
-    token() {
-      if (process.client) {
-        return window.localStorage.getItem('auth._token.spotify').slice(7);
-      }
+import { getAccessToken, logout } from '../services/authService'
 
-      return 'none';
+
+export default {
+  computed: {
+    token() {
+      return getAccessToken().slice(7);
     },
   },
   methods: {
     logout() {
-      this.$auth.logout();
+      logout(this);
     },
   },
 };
