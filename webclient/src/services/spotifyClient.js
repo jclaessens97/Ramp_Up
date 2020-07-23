@@ -3,8 +3,7 @@ import { chunkArray } from '../helpers/arrayUtils';
 
 export default class SpotifyClient {
   constructor(accessToken) {
-    this.SPOTIFY_API_URL = 'https://api.spotify.com/v1';
-    this.axios = requestUtils.createAxiosInstance(this.SPOTIFY_API_URL);
+    this.axios = requestUtils.createAxiosInstance('https://api.spotify.com/v1');
     this.axios.defaults.headers.common['Authorization'] = accessToken;
   }
 
