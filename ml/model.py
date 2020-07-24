@@ -13,7 +13,7 @@ from pathlib import Path
 from keras.utils import to_categorical
 from wandb.keras import WandbCallback
 
-# Set to true to print every step and data
+# Set to true to print every step and data, mainly for debugging and tuning
 VERBOSE = False
 
 # Creates dist folder to save the production-model and -metadata
@@ -22,11 +22,30 @@ Path("dist/").mkdir(parents=True, exist_ok=True)
 # Initialize wandb to visualize training
 wandb.init(project="spotify-ramp_up")
 
+# Tunable parameters config
+lr_schedule = keras.optimizers.schedules.ExponentialDecay(
+    initial_learning_rate=0.0005,
+    decay_steps=100000,
+    decay_rate=1e-6,
+)
+
+config = {
+    'val_train_ratio': 0.2, # 20% validation size
+    'n_epochs': 20,
+    'batch_size': 32,
+    'optimizer': keras.optimizers.Adam(learning_rate=lr_schedule), # keras.optimizers.Adam(learning_rate=lr_schedule),  # 'adam',
+    'loss': 'sparse_categorical_crossentropy',
+    'metrics': ['sparse_categorical_accuracy'],
+    'dense_1_size': 32,
+}
+
 #
 # PREPARE DATASET
 #
 input_filenames = [i for i in glob.glob(f"input/*.csv")]
+input_filenames = list(filter(lambda x: x != 'input/example.csv', input_filenames)) # ignore example file
 all_df = pd.concat([pd.read_csv(f) for f in input_filenames])
+all_df = all_df.sample(frac=1) # shuffle data
 different_genres_amount = len(set(all_df["genre"]))
 
 if VERBOSE:
@@ -34,8 +53,9 @@ if VERBOSE:
     print(all_df.head())
     print('\r\nnumber of different genres available: {}'.format(different_genres_amount))
 
-val_df = all_df.sample(frac=0.2, random_state=1337)
-train_df = all_df.drop(val_df.index)
+validation_size = int(len(all_df) * config['val_train_ratio'])
+val_df = all_df[:validation_size]
+train_df = all_df[:-validation_size]
 
 if VERBOSE:
     print(
@@ -75,8 +95,8 @@ if VERBOSE:
         print("input:", x)
         print("genre:", y)  
 
-train_ds = train_ds.batch(32)
-val_ds = val_ds.batch(32)
+train_ds = train_ds.batch(config['batch_size'])
+val_ds = val_ds.batch(config['batch_size'])
 
 #
 # BUILD MODEL
@@ -150,8 +170,7 @@ speechiness_encoded = encode_numerical_feature(speechiness, "speechiness", train
 valence_encoded = encode_numerical_feature(valence, "valence", train_ds)
 tempo_encoded = encode_numerical_feature(tempo, "tempo", train_ds)
 
-all_features = layers.concatenate(
-    [
+all_features = layers.concatenate([
         key_encoded,
         mode_encoded,
         time_signature_encoded,
@@ -164,18 +183,16 @@ all_features = layers.concatenate(
         speechiness_encoded,
         valence_encoded,
         tempo_encoded,
-    ]
-)
+])
 
-input_layer = layers.Dense(32, activation="relu")(all_features)
-hidden_1 = layers.Dense(32, activation="relu")(input_layer)
+hidden_1 = layers.Dense(config['dense_1_size'], activation="relu")(all_features)
 output = layers.Dense(different_genres_amount, activation="softmax")(hidden_1)
 
 model = keras.Model(all_inputs, output)
 model.compile(
-    optimizer="adam",
-    loss="sparse_categorical_crossentropy",
-    metrics=['accuracy']
+    optimizer=config['optimizer'],
+    loss=config['loss'],
+    metrics=config['metrics']
 )
 
 if VERBOSE:
@@ -185,7 +202,7 @@ if VERBOSE:
 #
 # TRAIN MODEL
 #
-model.fit(train_ds, epochs=50, validation_data=val_ds, callbacks=[WandbCallback()])
+model.fit(train_ds, epochs=config['n_epochs'], validation_data=val_ds, callbacks=[WandbCallback()])
 
 #
 # EVALUATE MODEL
