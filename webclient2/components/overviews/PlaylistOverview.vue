@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-col :cols="12">
     <div class="d-flex flex-row align-center">
       <h2>Playlist Overview</h2>
       <v-checkbox
@@ -7,6 +7,10 @@
         class="ml-5"
         label="Show only generated playlists"
       />
+    </div>
+
+    <div class="d-flex flex-row align-center">
+      <generate-playlists-dialog />
     </div>
 
     <v-data-table
@@ -41,12 +45,16 @@
         <v-icon v-if="!item.public" color="red">fa-lock-closed</v-icon>
       </template>
     </v-data-table>
-  </div>
-
+  </v-col>
 </template>
 
 <script>
+import GeneratePlaylistsDialog from '~/components/dialogs/GeneratePlaylistsDialog.vue';
+
 export default {
+  components: {
+    GeneratePlaylistsDialog,
+  },
   data: () => ({
     onlyGenerated: false,
     headers: [{

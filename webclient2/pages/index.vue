@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import PlaylistOverview from '~/components/PlaylistOverview.vue';
+import PlaylistOverview from '~/components/overviews/PlaylistOverview.vue';
 import {
   getAllPlaylistsByUserToken,
 } from '~/services/spotifyClient';
