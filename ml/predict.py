@@ -53,6 +53,20 @@ samples = {
         "tempo": 126.931,
         "time_signature": 3
     },
+    'metal': { # System of a down - Chop Suey!
+        "danceability": 0.413,
+        "energy": 0.933,
+        "key": 7,
+        "loudness": -3.912,
+        "mode": 0,
+        "speechiness": 0.127,
+        "acousticness": 0.000365,
+        "instrumentalness": 0.0023,
+        "liveness": 0.121,
+        "valence": 0.325,
+        "tempo": 127.202,
+        "time_signature": 4
+    },
 }
 
 def get_key_by_value(dict, value):
