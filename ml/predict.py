@@ -9,6 +9,8 @@ from keras.models import load_model
 
 RED = '31m'
 GREEN = '32m'
+YELLOW = '33m'
+certainty_treshold_percent=0.85
 
 samples = {
     'hiphop': { # Sevn Alias - Herres
@@ -67,6 +69,20 @@ samples = {
         "tempo": 127.202,
         "time_signature": 4
     },
+    'pop': { # Ed Sheeran - Galway Girl
+        "danceability": 0.624,
+        "energy": 0.876,
+        "key": 9,
+        "loudness": -3.374,
+        "mode": 1,
+        "speechiness": 0.1,
+        "acousticness": 0.0735,
+        "instrumentalness": 0,
+        "liveness": 0.327,
+        "valence": 0.781,
+        "tempo": 99.943,
+        "time_signature": 4
+    }
 }
 
 def get_key_by_value(dict, value):
@@ -80,8 +96,6 @@ def color_text(color, text):
 
 model = load_model('model')
 
-
-
 with (open('dist/encoded_labels.json', 'r')) as path:
     encoded_labels = json.load(path)
 
@@ -91,9 +105,16 @@ for sample_k, sample_v in samples.items():
     classes = predictions.argmax(axis=-1)
 
     predicted_val = get_key_by_value(encoded_labels, classes[0])
-    output_text = 'This song is predicted to be {}, and is actually {}'.format(predicted_val, sample_k)
+    output_text = 'This song is predicted to be {} ({:.2f}%), and is actually {}'.format(
+        predicted_val,
+        predictions[0][classes[0]] * 100,
+        sample_k,
+    )
 
     if predicted_val == sample_k:
         print(color_text(GREEN, output_text))
     else:
-        print(color_text(RED, output_text))
+        if (predictions[0][classes] < certainty_treshold_percent):
+            print(color_text(YELLOW, output_text))
+        else:
+            print(color_text(RED, output_text))
