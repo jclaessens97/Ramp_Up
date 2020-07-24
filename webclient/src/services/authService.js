@@ -18,11 +18,10 @@ export function parseAccessToken(ctx) {
   const { hash } = ctx.$route;
   const params = parseParams(hash.slice(1));
   storeAccessToken(params.access_token);
-  ctx.$router.push('/');
+  return params.access_token;
 }
 
 function storeAccessToken(accessToken) {
-  console.log(import.meta.env.VITE_TOKEN_KEY_NAME);
   window.localStorage.setItem(TOKEN_NAME, `Bearer ${accessToken}`);
 }
 

@@ -13,7 +13,6 @@ body {
   @apply uppercase;
   @apply tracking-wide;
   @apply px-5;
-  @apply py-3;
 }
 
 .action-button:hover {

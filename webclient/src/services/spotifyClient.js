@@ -1,10 +1,20 @@
 import requestUtils from '../helpers/requestUtils';
 import { chunkArray } from '../helpers/arrayUtils';
+import { getAccessToken } from './authService';
 
 export default class SpotifyClient {
-  constructor(accessToken) {
+  constructor() {
     this.axios = requestUtils.createAxiosInstance('https://api.spotify.com/v1');
-    this.axios.defaults.headers.common['Authorization'] = accessToken;
+    this.axios.defaults.headers.common['Authorization'] = getAccessToken();
+  }
+
+  async me() {
+    try {
+      const response = await requestUtils.GET(this.axios, '/me');
+      return response.data;
+    } catch (err) {
+      console.error(err.response);
+    }
   }
 
   getLikedTracksByUserToken(offset = 0, limit = 20) {
