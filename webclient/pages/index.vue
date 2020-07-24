@@ -7,7 +7,8 @@
         />
       </v-avatar>
       <h2 class="text-h4 font-weight-thin">
-        Hi, {{ user.display_name }}
+        {{ $vuetify.lang.t('$vuetify.hi') }},
+        {{ user.display_name }}
       </h2>
     </v-col>
     <v-col :cols="12">
@@ -34,13 +35,13 @@ export default {
   data: () => ({
     playlists: [],
   }),
-  created() {
-    console.log(this.user);
-  },
   computed: {
     user() {
       return this.$auth.$state.user;
     },
+  },
+  created() {
+    console.log(this.user);
   },
 };
 </script>

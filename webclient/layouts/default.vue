@@ -3,7 +3,7 @@
     <v-app-bar color="primary" app>
       <v-toolbar-title v-text="'Ramp_Up'" />
       <v-spacer />
-      <v-icon v-if="$auth.$state.loggedIn" @click="logout" large>
+      <v-icon v-if="$auth.$state.loggedIn" large @click="logout">
         fa-sign-out-alt
       </v-icon>
     </v-app-bar>

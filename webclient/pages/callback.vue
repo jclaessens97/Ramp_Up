@@ -1,3 +1,6 @@
 <template>
-  <p>Loading...</p>
+  <v-progress-linear
+    indeterminate
+    color="primary"
+  />
 </template>

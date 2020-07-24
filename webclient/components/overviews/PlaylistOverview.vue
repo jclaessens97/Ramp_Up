@@ -1,11 +1,11 @@
 <template>
   <v-col :cols="12">
     <div class="d-flex flex-row align-center">
-      <h2>Playlist Overview</h2>
+      <h2>{{ $vuetify.lang.t('$vuetify.playlistOverview.playlistOverview') }}</h2>
       <v-checkbox
         v-model="onlyGenerated"
         class="ml-5"
-        label="Show only generated playlists"
+        :label="$vuetify.lang.t('$vuetify.playlistOverview.showOnlyGenerated')"
       />
     </div>
 
@@ -26,6 +26,14 @@
         />
       </template>
 
+      <template v-slot:item.images="{ item }">
+        <v-img
+          :src="getSmallestImage(item.images).url"
+          :height="getSmallestImage(item.images).height"
+          contain
+        />
+      </template>
+
       <template v-slot:item.name="{ item }">
         <div class="d-flex align-center justify-space-between">
           {{ item.name }}
@@ -35,14 +43,18 @@
             outlined
             small
           >
-            view on spotify
+            {{ $vuetify.lang.t('$vuetify.playlistOverview.viewOnSpotify') }}
           </v-btn>
         </div>
       </template>
 
       <template v-slot:item.public="{ item }">
-        <v-icon v-if="item.public" color="green">fa-lock-open</v-icon>
-        <v-icon v-if="!item.public" color="red">fa-lock-closed</v-icon>
+        <v-icon v-if="item.public" color="green">
+          fa-lock-open
+        </v-icon>
+        <v-icon v-if="!item.public" color="red">
+          fa-lock-closed
+        </v-icon>
       </template>
     </v-data-table>
   </v-col>
@@ -55,29 +67,6 @@ export default {
   components: {
     GeneratePlaylistsDialog,
   },
-  data: () => ({
-    onlyGenerated: false,
-    headers: [{
-      text: '',
-      value: 'images',
-      sortable: false,
-      width: 60,
-    }, {
-      text: 'Name',
-      value: 'name',
-    }, {
-      text: '# Tracks',
-      value: 'tracks.total',
-      align: 'center',
-      width: 100,
-    }, {
-      text: 'Public',
-      value: 'public',
-      sortable: false,
-      align: 'center',
-      width: 40,
-    }],
-  }),
   props: {
     loading: {
       type: Boolean,
@@ -86,6 +75,36 @@ export default {
     playlists: {
       type: Array,
       required: true,
+    },
+  },
+  data: () => ({
+    onlyGenerated: false,
+  }),
+  computed: {
+    headers() {
+      return [
+        {
+          text: '',
+          value: 'images',
+          sortable: false,
+          width: 60,
+          align: 'center',
+        }, {
+          text: this.$vuetify.lang.t('$vuetify.playlistOverview.name'),
+          value: 'name',
+        }, {
+          text: `# ${this.$vuetify.lang.t('$vuetify.playlistOverview.tracks')}`,
+          value: 'tracks.total',
+          align: 'center',
+          width: 100,
+        }, {
+          text: this.$vuetify.lang.t('$vuetify.playlistOverview.public'),
+          value: 'public',
+          sortable: false,
+          width: 60,
+          align: 'center',
+        },
+      ];
     },
   },
   methods: {

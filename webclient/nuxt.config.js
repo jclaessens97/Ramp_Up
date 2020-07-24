@@ -1,4 +1,5 @@
 import colors from 'vuetify/es5/util/colors';
+import en from './locale/en';
 require('dotenv').config();
 
 export default {
@@ -82,6 +83,10 @@ export default {
           success: colors.green.accent3,
         },
       },
+    },
+    lang: {
+      locales: { en },
+      current: 'en',
     },
   },
 

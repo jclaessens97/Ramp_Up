@@ -9,9 +9,8 @@ export function parseParams(params) {
   params.split('&')
     .forEach((p) => {
       const [k, v] = p.split('=');
-
       obj[k] = v;
-    })
+    });
 
   return obj;
 }
