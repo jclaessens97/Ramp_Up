@@ -37,7 +37,12 @@ export default {
     '@nuxtjs/auth',
   ],
 
-  axios: {},
+  axios: {
+    /**
+     * The only API we need to call at the moment is the spotify API.
+     */
+    baseURL: 'https://api.spotify.com/v1',
+  },
 
   auth: {
     redirect: {
@@ -61,6 +66,9 @@ export default {
   },
 
   vuetify: {
+    defaultAssets: {
+      icons: 'fa',
+    },
     theme: {
       dark: true,
       themes: {
