@@ -6,13 +6,10 @@
 import { parseAccessToken, getAccessToken } from '../services/authService';
 
 export default {
+  inject: ['spotifyClient'],
   created() {
-    if (getAccessToken()) {
-      this.$router.push('/');
-      return;
-    }
-
     parseAccessToken(this);
+    this.$router.push('/');
   },
 };
 </script>
