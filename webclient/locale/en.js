@@ -21,6 +21,11 @@ export default {
     generatorSettings: 'Generator Settings',
     genres: 'genres',
     other: 'other',
-    preview: 'preview',
+  },
+
+  generator: {
+    retrievingLikedTracks: 'Retrieving liked tracks',
+    retrievedLikedTracks: 'Retrieved liked tracks',
+    failedRetrievingLikedTracks: 'Failed to retrieve liked tracks',
   },
 };

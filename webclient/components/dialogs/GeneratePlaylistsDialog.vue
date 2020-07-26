@@ -20,28 +20,25 @@
 
       <v-card-text>
         <div class="d-flex flex-column">
-          <h4 class="subtitle">
+          <h4 class="subtitle text-uppercase">
             {{ $vuetify.lang.t('$vuetify.generatePlaylistDialog.genres') }}
           </h4>
           <v-container fluid>
             <v-row dense>
-              <v-col :cols="6" class="pa-0">
-                <v-checkbox
-                  :label="$vuetify.lang.t('$vuetify.generatePlaylistDialog.all')"
-                  class="pa-0 ma-0"
-                  dense
-                />
-              </v-col>
               <v-col v-for="genre in supportedGenres" :key="genre" :cols="6" class="pa-0">
                 <v-checkbox
+                  v-model="options.genres"
                   :label="genre"
+                  :value="genre"
                   class="pa-0 ma-0"
                   dense
                 />
               </v-col>
               <v-col :cols="6" class="pa-0">
                 <v-checkbox
+                  v-model="options.genres"
                   :label="$vuetify.lang.t('$vuetify.generatePlaylistDialog.other')"
+                  value="other"
                   class="pa-0 ma-0"
                   dense
                 />
@@ -49,12 +46,32 @@
             </v-row>
           </v-container>
         </div>
+
+        <div class="d-flex flex-column">
+          <h4 class="subtitle text-uppercase">
+            {{ $vuetify.lang.t('$vuetify.generatePlaylistDialog.other') }}
+          </h4>
+          <v-row align="center">
+              <v-checkbox
+                v-model="options.maxNumber.enabled"
+                hide-details
+                class="pa-0 ma-0 ml-5"
+                dense
+              />
+              <v-text-field
+                v-model="options.maxNumber.value"
+                type="number"
+                :disabled="!options.maxNumber.enabled"
+                label="Maximum # tracks per playlist"
+              />
+          </v-row>
+        </div>
       </v-card-text>
 
       <v-card-actions>
         <v-spacer />
-        <v-btn color="primary">
-          {{ $vuetify.lang.t('$vuetify.generatePlaylistDialog.preview') }}
+        <v-btn color="primary" @click="startGenerator" :disabled="!validInput">
+          {{ $vuetify.lang.t('$vuetify.generatePlaylistDialog.generate') }}
         </v-btn>
         <v-btn text @click="active = false">
           {{ $vuetify.lang.t('$vuetify.generatePlaylistDialog.cancel') }}
@@ -71,6 +88,25 @@ export default {
   data: () => ({
     active: false,
     supportedGenres,
+    allGenresSelected: false,
+    options: {
+      genres: [],
+      maxNumber: {
+        enabled: false,
+        value: null,
+      },
+    },
   }),
+  computed: {
+    validInput() {
+      return this.options.genres.length > 0;
+    },
+  },
+  methods: {
+    startGenerator() {
+      this.$store.commit('generator/setOptions', this.options);
+      this.$router.push('/generator');
+    },
+  },
 };
 </script>

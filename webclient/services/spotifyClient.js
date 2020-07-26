@@ -1,18 +1,18 @@
 import requestUtils from '~/helpers/requestUtils';
 // import { chunkArray } from '~/helpers/arrayUtils';
 
-// function getLikedTracksByUserToken(offset = 0, limit = 20) {
-//   return requestUtils.GET('/me/tracks', { offset, limit });
-// }
+function getLikedTracksByUserToken(axios, offset = 0, limit = 20) {
+  return requestUtils.GET(axios, '/me/tracks', { offset, limit });
+}
 
-// async function getAllLikedTracksByUserToken() {
-//   const firstBatchResponse = await this.getLikedTracksByUserToken(0, 50);
-//   const otherBatches = await requestUtils.iteratePaginatedApiResponse(
-//     this.axios,
-//     firstBatchResponse,
-//   );
-//   return [...firstBatchResponse.data.items, ...otherBatches];
-// }
+export async function getAllLikedTracksByUserToken(ctx) {
+  const firstBatchResponse = await getLikedTracksByUserToken(ctx.$axios, 0, 50);
+  const otherBatches = await requestUtils.iteratePaginatedApiResponse(
+    ctx.$axios,
+    firstBatchResponse,
+  );
+  return [...firstBatchResponse.data.items, ...otherBatches];
+}
 
 function getPlaylistsByUserToken(axios, offset = 0, limit = 20) {
   return requestUtils.GET(axios, '/me/playlists', { offset, limit });
