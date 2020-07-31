@@ -1,5 +1,6 @@
 export default Object.freeze({
-  ACTIVE: 0,
-  DONE: 1,
-  FAILED: 2,
+  INACTIVE: 0,
+  ACTIVE: 1,
+  DONE: 2,
+  FAILED: 3,
 });

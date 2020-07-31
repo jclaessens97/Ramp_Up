@@ -8,7 +8,9 @@ import wandb
 from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.layers.experimental.preprocessing import Normalization
-from tensorflow.keras.layers.experimental.preprocessing import CategoryEncoding
+from tensorflow.keras.layers.experimental.preprocessing import PreprocessingLayer
+from tensorflow.keras.layers import Layer
+# from tensorflow.keras.layers.experimental.preprocessing import CategoryEncoding
 from pathlib import Path
 from keras.utils import to_categorical
 from wandb.keras import WandbCallback
@@ -80,8 +82,14 @@ def dataframe_to_dataset(df, ignore_columns=[]):
     df = df.copy()
     for col in ignore_columns:
         df.pop(col)
+
     labels = df.pop("genre")
     labels = map_to_integers(labels)
+
+    df['key'] = to_categorical(df['key'])
+    df['mode'] = to_categorical(df['mode'])
+    df['time_signature'] = to_categorical(df['time_signature'])
+
     ds = tf.data.Dataset.from_tensor_slices((dict(df), labels))
     ds = ds.shuffle(buffer_size=len(df))
     return ds
@@ -93,7 +101,7 @@ val_ds = dataframe_to_dataset(val_df, ignore_columns=ignore_columns)
 if VERBOSE:
     for x, y in train_ds.take(1):
         print("input:", x)
-        print("genre:", y)  
+        print("genre:", y)
 
 train_ds = train_ds.batch(config['batch_size'])
 val_ds = val_ds.batch(config['batch_size'])
@@ -102,9 +110,9 @@ val_ds = val_ds.batch(config['batch_size'])
 # BUILD MODEL
 #
 # Categorical features (as integers)
-key = keras.Input(shape=(1,), name="key", dtype="int64")
-mode = keras.Input(shape=(1,), name="mode", dtype="int64")
-time_signature = keras.Input(shape=(1,), name="time_signature", dtype="int64")
+key = keras.Input(shape=(1,), name="key", dtype="int64", tensor=train_df['key'])
+mode = keras.Input(shape=(1,), name="mode", dtype="int64", tensor=train_df['mode'])
+time_signature = keras.Input(shape=(1,), name="time_signature", dtype="int64", tensor=train_df['time_signature'])
 
 # Numerical features
 acousticness = keras.Input(shape=(1,), name="acousticness")
@@ -129,19 +137,12 @@ all_inputs = [
     loudness,
     speechiness,
     valence,
-    tempo,    
+    tempo,
 ]
 
-def encode_integer_categorical_feature(feature, name, dataset, max_tokens=None):
-    encoder = CategoryEncoding(max_tokens=max_tokens, output_mode="binary")
-
-    feature_ds = dataset.map(lambda x, y: x[name])
-    feature_ds = feature_ds.map(lambda x: tf.expand_dims(x, -1))
-
-    encoder.adapt(feature_ds)
-
-    encoded_feature = encoder(feature)
-    return encoded_feature
+def encode_integer_categorical_feature(data, numClasses):
+    inputlayer = layers.InputLayer(input_shape=data.shape, )
+    return inputlayer
 
 def encode_numerical_feature(feature, name, dataset):
     normalizer = Normalization()
@@ -155,9 +156,9 @@ def encode_numerical_feature(feature, name, dataset):
     return encoded_feature
 
 # Integer categorical features
-key_encoded = encode_integer_categorical_feature(key, "key", train_ds, max_tokens=12) # 0 to 11
-mode_encoded = encode_integer_categorical_feature(mode, "mode", train_ds, max_tokens=2) # 0 or 1
-time_signature_encoded = encode_integer_categorical_feature(time_signature, "time_signature", train_ds, max_tokens=7) # The time signature ranges from 3 to 7 indicating time signatures of “3/4”, to “7/4”.
+# key_encoded = encode_integer_categorical_feature(train_df['key'], numClasses=12) # 0 to 11
+# mode_encoded = encode_integer_categorical_feature(train_df['mode'], numClasses=2) # 0 or 1
+# time_signature_encoded = encode_integer_categorical_feature(train_df['time_signature'], numClasses=7) # The time signature ranges from 3 to 7 indicating time signatures of “3/4”, to “7/4”.
 
 # Numerical features
 acousticness_encoded = encode_numerical_feature(acousticness, "acousticness", train_ds)
@@ -171,18 +172,18 @@ valence_encoded = encode_numerical_feature(valence, "valence", train_ds)
 tempo_encoded = encode_numerical_feature(tempo, "tempo", train_ds)
 
 all_features = layers.concatenate([
-        key_encoded,
-        mode_encoded,
-        time_signature_encoded,
-        acousticness_encoded,
-        danceability_encoded,
-        energy_encoded,
-        instrumentalness_encoded,
-        liveness_encoded,
-        loudness_encoded,
-        speechiness_encoded,
-        valence_encoded,
-        tempo_encoded,
+    key,
+    mode,
+    time_signature,
+    acousticness_encoded,
+    danceability_encoded,
+    energy_encoded,
+    instrumentalness_encoded,
+    liveness_encoded,
+    loudness_encoded,
+    speechiness_encoded,
+    valence_encoded,
+    tempo_encoded,
 ])
 
 hidden_1 = layers.Dense(config['dense_1_size'], activation="relu")(all_features)
@@ -210,11 +211,12 @@ model.fit(train_ds, epochs=config['n_epochs'], validation_data=val_ds, callbacks
 evaluation = model.evaluate(train_ds)
 print("Evaluation: " + str(evaluation))
 
-# 
+#
 # SAVE MODEL
 # Save model in latest TF SavedModel format
 #
 model.save("model")
+model.save("model/model.h5")
 
 # Also save model to w&b dashboard
 model.save(os.path.join(wandb.run.dir, "model"))

@@ -24,8 +24,11 @@ export default {
   },
 
   generator: {
-    retrievingLikedTracks: 'Retrieving liked tracks',
-    retrievedLikedTracks: 'Retrieved liked tracks',
-    failedRetrievingLikedTracks: 'Failed to retrieve liked tracks',
+    fetchingLikedTracks: 'Fetching liked tracks',
+    fetchedLikedTracks: 'Fetched liked tracks',
+    failedFetchingLikedTracks: 'Failed to fetch liked tracks',
+    fetchingAudioFeatures: 'Fetching audio features',
+    fetchedAudioFeatures: 'Fetched audio features',
+    failedFetchingAudioFeatures: 'Failed to fetch audio features',
   },
 };

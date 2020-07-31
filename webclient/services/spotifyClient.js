@@ -1,5 +1,5 @@
 import requestUtils from '~/helpers/requestUtils';
-// import { chunkArray } from '~/helpers/arrayUtils';
+import { chunkArray } from '~/helpers/arrayUtils';
 
 function getLikedTracksByUserToken(axios, offset = 0, limit = 20) {
   return requestUtils.GET(axios, '/me/tracks', { offset, limit });
@@ -27,23 +27,24 @@ export async function getAllPlaylistsByUserToken(ctx) {
   return [...firstBatchResponse.data.items, ...otherBatches];
 }
 
-// async function getAudioFeaturesByIds(ids) {
-//   const chunks = chunkArray(ids, 100);
+export async function getAudioFeaturesByIds(ctx, ids) {
+  const chunks = chunkArray(ids, 100);
+  console.log(chunks);
 
-//   const features = [];
-//   for (let i = 0; i < chunks.length; i++) {
-//     const chunk = chunks[i];
-//     const audioFeaturesResponse = await requestUtils.GET(
-//       this.axios,
-//       '/audio-features',
-//       { ids: chunk.join(',') },
-//     );
+  const features = [];
+  for (let i = 0; i < chunks.length; i++) {
+    const chunk = chunks[i];
+    const audioFeaturesResponse = await requestUtils.GET(
+      ctx.$axios,
+      '/audio-features',
+      { ids: chunk.join(',') },
+    );
 
-//     features.push(...audioFeaturesResponse.data.audio_features);
-//   }
+    features.push(...audioFeaturesResponse.data.audio_features);
+  }
 
-//   return [...features];
-// }
+  return [...features];
+}
 
 // async function createPlaylist(userId, name, publicVisible = false, description = '') {
 //   const playlist = await requestUtils.POST(

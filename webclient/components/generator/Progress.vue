@@ -1,17 +1,20 @@
 <template>
-  <div class="d-flex flex-column">
-    <div v-for="status in statusses" :key="status.id">
-      <v-progress-circular
-        v-if="isActive(status)"
-        indeterminate
-        color="primary"
-      />
-      <v-icon large color="green" v-if="isDone(status)">far fa-check-circle</v-icon>
-      <v-icon color="red" v-if="isFailed(status)">far fa-times-circle</v-icon>
-
-      <span class="ml-2">{{ $vuetify.lang.t(getText(status)) }}...</span>
-    </div>
-  </div>
+  <v-container>
+    <v-row v-for="status in statusses" :key="status.id" class="align-center py-2" no-gutters>
+      <v-col :cols="1" class="text-center">
+        <v-progress-circular
+          v-show="isActive(status)"
+          indeterminate
+          color="primary"
+        />
+        <v-icon large color="green" v-if="isDone(status)">far fa-check-circle</v-icon>
+        <v-icon large color="red" v-if="isFailed(status)">far fa-times-circle</v-icon>
+      </v-col>
+      <v-col>
+        <span class="ml-2">{{ $vuetify.lang.t(getText(status)) }}...</span>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -27,12 +30,20 @@ export default {
   data: () => ({
     statusses: [{
       id: 0,
-      text: '$vuetify.generator.retrievingLikedTracks',
-      textDone: '$vuetify.generator.retrievedLikedTracks',
-      textFailed: '$vuetify.generator.failedRetrievingLikedTracks',
+      text: '$vuetify.generator.fetchingLikedTracks',
+      textDone: '$vuetify.generator.fetchedLikedTracks',
+      textFailed: '$vuetify.generator.failedFetchingLikedTracks',
+    }, {
+      id: 1,
+      text: '$vuetify.generator.fetchingAudioFeatures',
+      textDone: '$vuetify.generator.fetchedAudioFeatures',
+      textFailed: '$vuetify.generator.failedFetchingAudioFeatures',
     }],
   }),
   methods: {
+    isInactive(status) {
+      return this.progress.find((p) => p.id === status.id).status === ProgressState.INACTIVE;
+    },
     isActive(status) {
       return this.progress.find((p) => p.id === status.id).status === ProgressState.ACTIVE;
     },
