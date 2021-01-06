@@ -8,9 +8,9 @@ import wandb
 from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.layers.experimental.preprocessing import Normalization
+from tensorflow.keras.layers.experimental.preprocessing import CategoryEncoding
 from tensorflow.keras.layers.experimental.preprocessing import PreprocessingLayer
 from tensorflow.keras.layers import Layer
-# from tensorflow.keras.layers.experimental.preprocessing import CategoryEncoding
 from pathlib import Path
 from keras.utils import to_categorical
 from wandb.keras import WandbCallback
@@ -110,9 +110,9 @@ val_ds = val_ds.batch(config['batch_size'])
 # BUILD MODEL
 #
 # Categorical features (as integers)
-key = keras.Input(shape=(1,), name="key", dtype="int64", tensor=train_df['key'])
-mode = keras.Input(shape=(1,), name="mode", dtype="int64", tensor=train_df['mode'])
-time_signature = keras.Input(shape=(1,), name="time_signature", dtype="int64", tensor=train_df['time_signature'])
+key = keras.Input(shape=(1,), name="key")
+mode = keras.Input(shape=(1,), name="mode")
+time_signature = keras.Input(shape=(1,), name="time_signature")
 
 # Numerical features
 acousticness = keras.Input(shape=(1,), name="acousticness")
@@ -140,9 +140,18 @@ all_inputs = [
     tempo,
 ]
 
-def encode_integer_categorical_feature(data, numClasses):
-    inputlayer = layers.InputLayer(input_shape=data.shape, )
-    return inputlayer
+def encode_integer_categorical_feature(feature, name, dataset, max_tokens=None):
+    encoder = CategoryEncoding(max_tokens=max_tokens, output_mode="binary")
+
+    feature_ds = dataset.map(lambda x, y: x[name])
+    feature_ds = feature_ds.map(lambda x: tf.expand_dims(x, -1))
+
+    encoder.adapt(feature_ds)
+
+    # encoder.max_tokens = encoder._combiner.max_tokens = len(encoder.get_vocabulary())
+
+    encoded_feature = encoder(feature)
+    return encoded_feature
 
 def encode_numerical_feature(feature, name, dataset):
     normalizer = Normalization()
@@ -156,9 +165,9 @@ def encode_numerical_feature(feature, name, dataset):
     return encoded_feature
 
 # Integer categorical features
-# key_encoded = encode_integer_categorical_feature(train_df['key'], numClasses=12) # 0 to 11
-# mode_encoded = encode_integer_categorical_feature(train_df['mode'], numClasses=2) # 0 or 1
-# time_signature_encoded = encode_integer_categorical_feature(train_df['time_signature'], numClasses=7) # The time signature ranges from 3 to 7 indicating time signatures of “3/4”, to “7/4”.
+key_encoded = encode_integer_categorical_feature(key, 'key', train_ds, 12) # 0 to 11
+mode_encoded = encode_integer_categorical_feature(mode, 'mode', train_ds, 2) # 0 or 1
+time_signature_encoded = encode_integer_categorical_feature(time_signature, 'time_signature', train_ds, 7) # The time signature ranges from 3 to 7 indicating time signatures of “3/4”, to “7/4”.
 
 # Numerical features
 acousticness_encoded = encode_numerical_feature(acousticness, "acousticness", train_ds)
