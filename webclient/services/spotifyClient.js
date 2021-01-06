@@ -62,7 +62,6 @@ export async function createPlaylist(ctx, userId, name, description = '', public
 
 export async function addTracksToPlaylist(ctx, playlistId, trackUris) {
   const chunks = chunkArray(trackUris, 100);
-  console.log(chunks);
 
   for (let i = 0; i < chunks.length; i++) {
     const chunk = chunks[i];
