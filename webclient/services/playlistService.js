@@ -21,31 +21,47 @@ function generateRandomPlaylistName(genre) {
   return `${genre}_${Math.random().toString(36).substring(7)}`;
 }
 
-export async function generatePlaylists(likedSongs, options) {
-  const model = await loadGenreModel();
-  const playlists = initPlaylistsPerGenre(options.genres);
+function transformPlaylistObject(playlistObj) {
+  const playlists = [];
 
-  likedSongs.forEach((song) => {
-    const genre = getGenreFromTrack(model, song);
-
-    if (genre in playlists) {
-      playlists[genre].push(song);
-    }
+  Object.keys(playlistObj).forEach((genre) => {
+    playlists.push({
+      name: generateRandomPlaylistName(genre),
+      genre,
+      tracks: playlistObj[genre],
+    });
   });
 
   return playlists;
 }
 
+export async function generatePlaylists(likedSongs, options) {
+  const model = await loadGenreModel();
+  const playlists = initPlaylistsPerGenre(options.genres);
+
+  likedSongs.forEach((song) => {
+    const track = song;
+    const genre = getGenreFromTrack(model, track);
+    track.genre = genre;
+
+    if (genre.name in playlists) {
+      playlists[genre.name].push(track);
+    }
+  });
+
+  return transformPlaylistObject(playlists);
+}
+
 export async function createPlaylistsOnSpotify(ctx, userId, playlists) {
   const createSpotifyPlaylistPromises = [];
+  console.log(playlists);
 
-  // TODO: improve
-  Object.keys(playlists).forEach((k) => {
+  playlists.forEach((p) => {
     createSpotifyPlaylistPromises.push(
       createPlaylist(
         ctx,
         userId,
-        generateRandomPlaylistName(k),
+        p.name,
       ),
     );
   });
@@ -53,17 +69,16 @@ export async function createPlaylistsOnSpotify(ctx, userId, playlists) {
   const createdPlaylists = await Promise.all(createSpotifyPlaylistPromises);
 
   const addTracksToPlaylistPromises = [];
-  let index = 0;
   createdPlaylists.forEach((playlist) => {
+    const myPlaylist = playlists.find((p) => p.name === playlist.name);
+
     addTracksToPlaylistPromises.push(
       addTracksToPlaylist(
         ctx,
         playlist.id,
-        Object.values(playlists)[index].map((track) => track.uri),
+        myPlaylist.tracks.map((track) => track.uri),
       ),
     );
-
-    index += 1;
   });
 }
 

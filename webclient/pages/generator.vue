@@ -5,6 +5,12 @@
     </v-col>
     <v-col :cols="12">
       <generator-progress :progress="progress" :states="states" />
+      <preview-playlists v-if="awaitingPreview" :playlists="generatedPlaylists" />
+    </v-col>
+    <v-col :cols="12">
+      <v-btn v-if="isFinished" href="/" color="primary">
+        {{ $vuetify.lang.t('$vuetify.generator.home') }}
+      </v-btn>
     </v-col>
   </v-row>
 </template>
@@ -24,17 +30,18 @@ import {
 } from '~/services/playlistService';
 import Progress from '~/components/generator/Progress.vue';
 import ProgressState from '~/data/progressState';
+import PreviewPlaylists from '~/components/generator/PreviewPlaylists.vue';
 
 export default {
   middleware: ['auth', 'generator'],
   components: {
     GeneratorProgress: Progress,
+    PreviewPlaylists,
   },
   async fetch() {
     await this.fetchLikedTracks();
     await this.fetchAudioFeatures();
     await this.generatePlaylists();
-    await this.createPlaylistsOnSpotify();
   },
   data: () => ({
     likedTracks: [],
@@ -78,6 +85,16 @@ export default {
     ...mapState({
       options: (state) => state.generator.options,
     }),
+    awaitingPreview() {
+      return this.progress[2].status === ProgressState.DONE
+        && this.progress[3].status !== ProgressState.DONE;
+    },
+    isFinished() {
+      return this.progress[this.progress.length - 1].status === ProgressState.DONE;
+    },
+  },
+  created() {
+    this.$nuxt.$on('accept-playlist-preview', (playlists) => this.createPlaylistsOnSpotify(playlists));
   },
   methods: {
     updateStatus(id, state) {
@@ -112,15 +129,17 @@ export default {
           this.options,
         );
         this.updateStatus(2, ProgressState.DONE);
-        this.updateStatus(3, ProgressState.ACTIVE);
+        this.updateStatus(3, ProgressState.WAITING);
       } catch (err) {
         this.updateStatus(2, ProgressState.FAILED);
       }
     },
-    async createPlaylistsOnSpotify() {
+    async createPlaylistsOnSpotify(playlists) {
       try {
-        await createPlaylistsOnSpotify(this, this.$auth.$state.user.id, this.generatedPlaylists);
+        console.log(playlists);
+        await createPlaylistsOnSpotify(this, this.$auth.$state.user.id, playlists);
         this.updateStatus(3, ProgressState.DONE);
+        // this.$router.push('/');
       } catch (err) {
         console.error(err);
         this.updateStatus(3, ProgressState.FAILED);

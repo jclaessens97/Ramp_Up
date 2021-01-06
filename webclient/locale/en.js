@@ -24,6 +24,7 @@ export default {
   },
 
   generator: {
+    home: 'Home',
     fetchingLikedTracks: 'Fetching liked tracks',
     fetchedLikedTracks: 'Fetched liked tracks',
     failedFetchingLikedTracks: 'Failed to fetch liked tracks',
@@ -36,5 +37,13 @@ export default {
     creatingPlaylistsSpotify: 'Creating playlists on Spotify',
     createdPlaylistsSpotify: 'Created playlists on Spotify',
     failedCreatingPlaylists: 'Failed to create playlists on Spotify',
+  },
+
+  generatorPreview: {
+    trackName: 'Track Name',
+    artists: 'Artist(s)',
+    genre: 'Genre',
+    preview: 'Preview',
+    continue: 'Continue',
   },
 };

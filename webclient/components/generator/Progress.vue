@@ -7,8 +7,9 @@
           indeterminate
           color="primary"
         />
-        <v-icon large color="green" v-if="isDone(status)">far fa-check-circle</v-icon>
-        <v-icon large color="red" v-if="isFailed(status)">far fa-times-circle</v-icon>
+        <v-icon large color="success" v-if="isDone(status)">far fa-check-circle</v-icon>
+        <v-icon large color="warning" v-if="isWaiting(status)">far fa-pause-circle</v-icon>
+        <v-icon large color="error" v-if="isFailed(status)">far fa-times-circle</v-icon>
       </v-col>
       <v-col>
         <span class="ml-2">{{ $vuetify.lang.t(getText(status)) }}...</span>
@@ -37,6 +38,9 @@ export default {
     },
     isActive(status) {
       return this.progress.find((p) => p.id === status.id).status === ProgressState.ACTIVE;
+    },
+    isWaiting(status) {
+      return this.progress.find((p) => p.id === status.id).status === ProgressState.WAITING;
     },
     isDone(status) {
       return this.progress.find((p) => p.id === status.id).status === ProgressState.DONE;

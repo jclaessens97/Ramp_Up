@@ -42,12 +42,18 @@ export function getGenreFromTrack(model, track) {
   const prediction = model.predict(Object.values(input)).dataSync();
   const supportedGenres = getSupportedGenres();
 
-  if (prediction.some((p) => p > 0.85)) {
-    const indexOfhighestProbabilityLabel = prediction.indexOf(Math.max(...prediction));
-    return supportedGenres[indexOfhighestProbabilityLabel];
+  const highestProbability = Math.max(...prediction);
+  const genre = {};
+
+  if (highestProbability > 0.85) {
+    const indexOfhighestProbabilityLabel = prediction.indexOf(highestProbability);
+    genre.name = supportedGenres[indexOfhighestProbabilityLabel];
+  } else {
+    genre.name = supportedGenres[supportedGenres.length - 1];
   }
 
-  return supportedGenres[supportedGenres.length - 1];
+  genre.probability = highestProbability;
+  return genre;
 }
 
 export function mergeAudioFeaturesToTracks(tracks, audioFeatures) {
