@@ -46,33 +46,35 @@ export async function getAudioFeaturesByIds(ctx, ids) {
   return [...features];
 }
 
-// async function createPlaylist(userId, name, publicVisible = false, description = '') {
-//   const playlist = await requestUtils.POST(
-//     this.axios,
-//     `/users/${userId}/playlists`,
-//     {
-//       name,
-//       public: publicVisible,
-//       description,
-//     },
-//   );
-//   return playlist.data;
-// }
+export async function createPlaylist(ctx, userId, name, description = '', publicVisible = false, collaborative = false) {
+  const playlist = await requestUtils.POST(
+    ctx.$axios,
+    `/users/${userId}/playlists`,
+    {
+      name,
+      public: publicVisible,
+      description,
+      collaborative,
+    },
+  );
+  return playlist.data;
+}
 
-// async function addTracksToPlaylist(playlistId, trackUris) {
-//   const chunks = chunkArray(trackUris, 100);
+export async function addTracksToPlaylist(ctx, playlistId, trackUris) {
+  const chunks = chunkArray(trackUris, 100);
+  console.log(chunks);
 
-//   for (let i = 0; i < chunks.length; i++) {
-//     const chunk = chunks[i];
-//     await requestUtils.POST(
-//       this.axios,
-//       `/playlists/${playlistId}/tracks`,
-//       { uris: chunk },
-//     );
-//   }
+  for (let i = 0; i < chunks.length; i++) {
+    const chunk = chunks[i];
+    await requestUtils.POST(
+      ctx.$axios,
+      `/playlists/${playlistId}/tracks`,
+      { uris: chunk },
+    );
+  }
 
-//   return Promise.resolve();
-// }
+  return Promise.resolve();
+}
 
 // async function getTracksFromPlaylist(playlistId, offset = 0, limit = 100) {
 //   return requestUtils.GET(

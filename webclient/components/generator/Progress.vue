@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-row v-for="status in statusses" :key="status.id" class="align-center py-2" no-gutters>
+    <v-row v-for="status in states" :key="status.id" class="align-center py-2" no-gutters>
       <v-col :cols="1" class="text-center">
         <v-progress-circular
           v-show="isActive(status)"
@@ -26,20 +26,11 @@ export default {
       type: Array,
       required: true,
     },
+    states: {
+      type: Array,
+      required: true,
+    },
   },
-  data: () => ({
-    statusses: [{
-      id: 0,
-      text: '$vuetify.generator.fetchingLikedTracks',
-      textDone: '$vuetify.generator.fetchedLikedTracks',
-      textFailed: '$vuetify.generator.failedFetchingLikedTracks',
-    }, {
-      id: 1,
-      text: '$vuetify.generator.fetchingAudioFeatures',
-      textDone: '$vuetify.generator.fetchedAudioFeatures',
-      textFailed: '$vuetify.generator.failedFetchingAudioFeatures',
-    }],
-  }),
   methods: {
     isInactive(status) {
       return this.progress.find((p) => p.id === status.id).status === ProgressState.INACTIVE;

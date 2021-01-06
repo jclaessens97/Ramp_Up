@@ -82,12 +82,11 @@
 </template>
 
 <script>
-import supportedGenres from '~/data/supportedGenres';
+import { getSupportedGenres } from '~/services/trackService';
 
 export default {
   data: () => ({
     active: false,
-    supportedGenres,
     allGenresSelected: false,
     options: {
       genres: [],
@@ -100,6 +99,9 @@ export default {
   computed: {
     validInput() {
       return this.options.genres.length > 0;
+    },
+    supportedGenres() {
+      return getSupportedGenres();
     },
   },
   methods: {

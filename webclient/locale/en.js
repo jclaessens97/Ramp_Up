@@ -30,5 +30,11 @@ export default {
     fetchingAudioFeatures: 'Fetching audio features',
     fetchedAudioFeatures: 'Fetched audio features',
     failedFetchingAudioFeatures: 'Failed to fetch audio features',
+    generatingPlaylists: 'Generating playlists',
+    generatedPlaylists: 'Generated playlists',
+    failedGeneratingPlaylists: 'Failed to generate playlists',
+    creatingPlaylistsSpotify: 'Creating playlists on Spotify',
+    createdPlaylistsSpotify: 'Created playlists on Spotify',
+    failedCreatingPlaylists: 'Failed to create playlists on Spotify',
   },
 };
