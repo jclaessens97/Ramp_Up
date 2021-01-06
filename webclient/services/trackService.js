@@ -21,7 +21,7 @@ function organizeDictToPredict(tensors) {
 }
 
 export function getSupportedGenres() {
-  return Object.keys(labels);
+  return [...Object.keys(labels), 'other'];
 }
 
 export function getGenreFromTrack(model, track) {
@@ -40,8 +40,14 @@ export function getGenreFromTrack(model, track) {
   input = organizeDictToPredict(input);
 
   const prediction = model.predict(Object.values(input)).dataSync();
-  const indexOfhighestProbabilityLabel = prediction.indexOf(Math.max(...prediction));
-  return getSupportedGenres()[indexOfhighestProbabilityLabel];
+  const supportedGenres = getSupportedGenres();
+
+  if (prediction.some((p) => p > 0.85)) {
+    const indexOfhighestProbabilityLabel = prediction.indexOf(Math.max(...prediction));
+    return supportedGenres[indexOfhighestProbabilityLabel];
+  }
+
+  return supportedGenres[supportedGenres.length - 1];
 }
 
 export function mergeAudioFeaturesToTracks(tracks, audioFeatures) {

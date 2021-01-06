@@ -20,7 +20,7 @@ export default {
     generate: 'generate',
     generatorSettings: 'Generator Settings',
     genres: 'genres',
-    other: 'other',
+    additionalSettings: 'Additional Settings',
   },
 
   generator: {

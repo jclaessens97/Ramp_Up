@@ -34,22 +34,13 @@
                   dense
                 />
               </v-col>
-              <v-col :cols="6" class="pa-0">
-                <v-checkbox
-                  v-model="options.genres"
-                  :label="$vuetify.lang.t('$vuetify.generatePlaylistDialog.other')"
-                  value="other"
-                  class="pa-0 ma-0"
-                  dense
-                />
-              </v-col>
             </v-row>
           </v-container>
         </div>
 
         <div class="d-flex flex-column">
           <h4 class="subtitle text-uppercase">
-            {{ $vuetify.lang.t('$vuetify.generatePlaylistDialog.other') }}
+            {{ $vuetify.lang.t('$vuetify.generatePlaylistDialog.additionalSettings') }}
           </h4>
           <v-row align="center">
               <v-checkbox
